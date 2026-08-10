@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أداة رقم (13): الأمراض الشائعة والمعدية</title>
+<style>
+  :root{
+    --brand:#1f7a8c;
+    --brand-dark:#155a68;
+    --accent:#1f7a8c;
+    --accent-light:#e2f0f2;
+    --bg:#f6f3ee;
+    --card:#ffffff;
+    --line:#e7e0d4;
+    --text:#2b2b2b;
+    --muted:#7a7268;
+    --low:#4caf82;
+    --mid:#e0a72f;
+    --high:#d9534f;
+    --urgent:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI","Tahoma","Arial",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding:24px 12px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  .home-bar{display:flex;justify-content:flex-start;margin-bottom:10px;}
+  .btn-home{
+    display:inline-flex;align-items:center;gap:6px;background:#efe9dd;color:var(--text);
+    text-decoration:none;font-weight:700;font-size:13.5px;padding:8px 16px;border-radius:9px;
+    border:1px solid var(--line);transition:background .15s;
+  }
+  .btn-home:hover{background:#e5ddcc;}
+
+  header{
+    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:22px;
+    box-shadow:0 6px 18px rgba(21,90,104,.25);
+  }
+  header h1{margin:0 0 6px;font-size:22px;}
+  header p{margin:0;opacity:.9;font-size:14px;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.03);
+  }
+
+  .student-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:640px){ .student-info{grid-template-columns:1fr;} }
+  .student-info label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .student-info input{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fbfaf7;
+  }
+
+  .section-header{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--accent-light);border:1px solid #cfe6e9;border-radius:10px;
+    padding:10px 16px;margin-bottom:10px;
+  }
+  .section-header.urgent{background:#fbe4e2;border-color:#f2cfcb;}
+  .section-header .title{
+    font-weight:700;font-size:16px;color:var(--brand-dark);display:flex;align-items:center;gap:10px;
+  }
+  .section-header.urgent .title{color:#8e2a1c;}
+  .section-header .badge{
+    font-size:12px;background:var(--accent);color:#fff;padding:2px 9px;border-radius:999px;
+  }
+  .section-header.urgent .badge{background:var(--urgent);}
+
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;}
+  thead th{
+    text-align:right;color:var(--muted);font-weight:600;font-size:12.5px;padding:6px 8px;border-bottom:2px solid var(--line);
+  }
+  thead th.opt{text-align:center;width:70px;}
+  tbody td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .item-text{line-height:1.5;}
+  .opt-cell{text-align:center;}
+  input[type=radio]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer;}
+
+  .alert-box{
+    display:none;
+    margin-top:14px;
+    padding:14px 16px;
+    border-radius:10px;
+    line-height:1.9;
+    font-size:14px;
+  }
+  .alert-box.show{display:block;}
+  .alert-box.info{background:#fff8e6;border:1px solid #f0dca0;}
+  .alert-box.urgent{background:#fdeceb;border:2px solid var(--urgent);}
+  .alert-box h4{margin:0 0 8px;font-size:15px;}
+  .alert-box.info h4{color:#8a6b12;}
+  .alert-box.urgent h4{color:var(--urgent);}
+  .alert-box ul{margin:0;padding-inline-start:18px;}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+  button{
+    font-family:inherit;border:none;border-radius:9px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-secondary{background:#efe9dd;color:var(--text);}
+  .btn-secondary:hover{background:#e5ddcc;}
+
+  footer{text-align:center;font-size:12px;color:var(--muted);margin-top:30px;}
+
+  /* دليل الأمراض */
+  .disease-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  .disease{
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  }
+  .disease-header{
+    display:flex;align-items:center;justify-content:space-between;
+    background:#fbfaf7;padding:10px 14px;cursor:pointer;user-select:none;
+  }
+  .disease-header .title{font-weight:700;font-size:14.5px;color:var(--brand-dark);}
+  .disease-header .chev{font-size:13px;color:var(--muted);transition:transform .2s;}
+  .disease.open .disease-header .chev{transform:rotate(180deg);}
+  .disease-body{display:none;padding:12px 14px;font-size:13.5px;line-height:1.9;color:var(--text);border-top:1px dashed var(--line);}
+  .disease.open .disease-body{display:block;}
+  .search-box{
+    width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;
+    margin-bottom:14px;background:#fbfaf7;
+  }
+
+  @media print{
+    @page{ margin: 14mm 12mm; }
+    button, .actions, .home-bar, .search-box{display:none !important;}
+    body{background:#fff !important; padding:0;}
+    .wrap{max-width:100%;}
+    .disease-body{display:block !important;}
+    .disease{page-break-inside:avoid;}
+
+    .card{box-shadow:none;border:1px solid #d8cdb0;border-radius:0;margin-bottom:10px;padding:12px 14px;page-break-inside:auto;}
+    table{page-break-inside:auto;}
+    thead{ display:table-header-group; }
+    tbody tr{page-break-inside:avoid;page-break-after:auto;}
+
+    header{
+      background:#1f7a8c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      color:#fff !important; border-radius:0; box-shadow:none; padding:14px 18px; margin-bottom:14px;
+      page-break-after:avoid;
+    }
+    header h1{font-size:16px;}
+    header p{font-size:11.5px;}
+
+    .section-header{
+      background:#e2f0f2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      border:1px solid #cfe6e9;border-radius:0;page-break-after:avoid;
+    }
+    .section-header.urgent{background:#fbe4e2 !important;border-color:#f2cfcb;}
+    table{font-size:11.5px;}
+    thead th{background:#eef7f8 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    tbody td{padding:5px 6px;}
+    input[type=radio]{width:13px;height:13px;}
+
+    .alert-box{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    footer{font-size:10px;margin-top:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="home-bar">
+    <a href="index.html" class="btn-home">🏠 الصفحة الرئيسية</a>
+  </div>
+
+  <header>
+    <h1>أداة رقم (13): الأمراض الشائعة والمعدية</h1>
+    <p>عبّئ صحيفة الرصد لتحديد إن كان الطالب بحاجة إلى اهتمام إضافي أو إسعافات أولية سريعة. عند اختيار "نعم" لأي علامة، ستظهر لك الأداة تلقائياً الإجراءات الموصى بها من دليل المعلم.</p>
+  </header>
+
+  <div class="card">
+    <div class="student-info">
+      <div>
+        <label>اسم الطالب</label>
+        <input type="text" id="studentName" placeholder="اكتب اسم الطالب">
+      </div>
+      <div>
+        <label>الصف</label>
+        <input type="text" id="studentGrade" placeholder="مثال: الثاني ب">
+      </div>
+      <div>
+        <label>التاريخ</label>
+        <input type="date" id="assessDate">
+      </div>
+    </div>
+  </div>
+
+  <!-- المجال الأول: الاهتمام الإضافي -->
+  <div class="card">
+    <div class="section-header">
+      <div class="title">الاهتمام الإضافي <span class="badge">14 علامة</span></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>العلامة التحذيرية</th>
+          <th class="opt">نعم</th>
+          <th class="opt">لا</th>
+        </tr>
+      </thead>
+      <tbody id="section1Body"></tbody>
+    </table>
+
+    <div class="alert-box info" id="alertSection1">
+      <h4>⚠ الطالب يحتاج إلى اهتمام إضافي — الإجراءات الموصى بها:</h4>
+      <ul>
+        <li>اسمح للطالب بأخذ قسط من الراحة.</li>
+        <li>تحدث إلى المرشد الصحي وتواصل مع ولي الأمر.</li>
+        <li>أرسل الطالب إلى البيت أو حوّله لإجراء الفحص الطبي بالتنسيق مع المرشد الصحي ومدير المدرسة.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- المجال الثاني: بحاجة للإسعافات الأولية السريعة -->
+  <div class="card">
+    <div class="section-header urgent">
+      <div class="title">بحاجة للإسعافات الأولية السريعة <span class="badge">5 علامات</span></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>العلامة التحذيرية</th>
+          <th class="opt">نعم</th>
+          <th class="opt">لا</th>
+        </tr>
+      </thead>
+      <tbody id="section2Body"></tbody>
+    </table>
+
+    <div class="alert-box urgent" id="alertSection2">
+      <h4>🚨 حالة تستدعي إسعافاً أولياً فورياً — الإجراءات الموصى بها:</h4>
+      <ul>
+        <li>حافظ على هدوئك وهدّئ من روع الطالب وزملائه في الصف.</li>
+        <li>اطلب المساندة الفورية من فريق مساندة الطلبة أو المعلم (المرشد الصحي) الذي يمتلك مهارات الإسعاف الأولي، وسيقومون بدورهم بتقديم المساندة المناسبة للطالب أو تحويله إلى الطبيب.</li>
+        <li>حاول أن تعرف من خلال الطالب أو زملائه ما الذي حدث ريثما تنتظر المساعدة.</li>
+        <li>تعرّف عن طريق الأهل على حالة الطالب والتعليمات التي قدّمها لهم الطبيب بخصوصه.</li>
+        <li>قم بإعداد خطة عمل لتعويض الحصص أو الاختبارات التي تغيّب الطالب عنها.</li>
+        <li>في حالة إصابة الطالب بمرض معدٍ، قم بتوعية الطلبة والمعلمين وأولياء الأمور والمجتمع المحلي حول المرض والوقاية منه، وراقب أية علامات تحذيرية لدى زملائه في الصف.</li>
+        <li>حافظ على السرية التامة لكل حالة مرضية لدى الطلبة، وأبلغ الأشخاص ذوي العلاقة فقط.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:700;margin-bottom:10px;color:var(--brand-dark);">عند عودة الطالب إلى المدرسة</div>
+    <ul style="margin:0;padding-inline-start:18px;line-height:1.9;font-size:14px;">
+      <li>تابع حالته وتأكد من معافاته ومن التعليمات المرسلة مع التقرير التي تسمح له بالعودة إلى المدرسة.</li>
+    </ul>
+
+    <div class="actions">
+      <button class="btn-primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="btn-secondary" id="resetBtn">↺ تفريغ الصحيفة</button>
+    </div>
+  </div>
+
+  <!-- دليل الأمراض: جيد أن تعلم -->
+  <div class="card">
+    <h2 style="margin-top:0;font-size:18px;color:var(--brand-dark);">جيد أن تعلم — دليل الأمراض الشائعة والمعدية</h2>
+    <input type="text" class="search-box" id="diseaseSearch" placeholder="🔍 ابحث عن مرض...">
+    <div class="disease-grid" id="diseaseGrid"></div>
+  </div>
+
+  <footer>مبني على: حقيبة المعلم لتحديد احتياجات الطلبة المتنوعة والاستجابة لها — أداة رقم (13) — UNRWA</footer>
+</div>
+
+<script>
+const SECTION1_ITEMS = [
+  "شحوب الوجه والضعف العام.",
+  "الإجهاد والتعب والشكوى من الضعف.",
+  "الغثيان.",
+  "آلام في الجسم (الأذن، الرأس، المعدة، الجسم...).",
+  "آلام الأسنان.",
+  "الإرهاق عند ممارسة التمارين الرياضية.",
+  "ارتفاع درجة حرارة الجسم.",
+  "الحكة وظهور الطفح الجلدي أو البقع في الوجه أو الجسد.",
+  "اصفرار الوجه.",
+  "تورم العينين أو الحكة أو وجود إفرازات من العينين.",
+  "إفرازات الأذنين.",
+  "الحكة المستمرة للرأس.",
+  "استمرار السعال.",
+  "سيلان الأنف."
+];
+
+const SECTION2_ITEMS = [
+  "الجروح / النزف.",
+  "الشعور بآلام شديدة نتيجة الإصابة بحادث.",
+  "صعوبة في التنفس.",
+  "الإغماء / فقدان الوعي.",
+  "التشنجات (مثل الصرع)."
+];
+
+const DISEASES = [
+  {
+    name: "انفلونزا / عدوى الجهاز التنفسي العلوي",
+    text: "تنتشر عدوى الجهاز التنفسي العلوي عادة في فصل الشتاء مسببة ألماً بالحلق أو العطس أو الرشح واحتقان الأنف أو الصداع أو الحمى أو آلاماً عامة أو الإجهاد. ومن المهم في المدرسة الاعتناء بالنظافة وغسل اليدين وتجنب انتشار الزكام أو الانفلونزا. يجب إبقاء الأطفال الذين يعانون من الزكام أو الانفلونزا دافئين لتسريع عملية الشفاء."
+  },
+  {
+    name: "التهاب الغدة (الغدة النكافية)",
+    text: "يحدث التهاب الغدد في مرحلة الطفولة بسبب فيروس، وعادة لا يكون المرض خطيراً على الأطفال. يسبب هذا المرض تورماً مؤلماً في أحد جانبي الوجه. وينتشر هذا المرض بنفس الطريقة التي ينتشر بها الزكام والانفلونزا."
+  },
+  {
+    name: "التهاب ملتحمة العين",
+    text: "يسبب التهاب ملتحمة العين الحكة وسيلان الدمع وتراكم مادة لزجة على العين. وينتشر هذا المرض بين الطلبة في فصل الربيع بشكل خاص. عند ظهور أعراض هذا الالتهاب فإنه يجب القيام بتحويل الطفل إلى الطبيب لتلقي العلاج اللازم وإبقائه في المنزل لتجنب انتشار المرض."
+  },
+  {
+    name: "التهاب الأذن",
+    text: "يسبب التهاب الأذن ألماً شديداً في الأذن وإفراز مادة صفراء منها، وتتم معالجة هذا الالتهاب بالمضادات الحيوية. وقد يتطور هذا الالتهاب ليصبح مزمناً مسبباً فقداناً بالسمع إذا لم تتم معالجته. عند ملاحظة خروج مادة صفراء من أذن الطفل فإنه يجب إحالته فوراً للفحص الطبي."
+  },
+  {
+    name: "الحصبة الألمانية",
+    text: "تسبب الحصبة الألمانية طفحاً جلدياً وتورماً في الغدد ولها نفس أعراض الانفلونزا. وتنتشر بنفس طريقة الزكام والانفلونزا. وعادة ما تكون مرضاً بسيطاً، ولكن إذا أصيبت به امرأة حامل فإنه قد يشكل خطراً على الجنين وقد يسبب له الصمم."
+  },
+  {
+    name: "جدري الماء",
+    text: "هو مرض شائع وهو من الأمراض المعدية البسيطة، يسبب حكة واحمراراً في الجلد وظهور حبوب مليئة بالماء في مختلف أنحاء الجسم. ولتجنب انتشار هذا المرض فإنه يجب إبقاء الطالب المصاب بالمنزل حتى يسمح له الطبيب بالعودة إلى المدرسة."
+  },
+  {
+    name: "السحايا",
+    text: "هو التهاب حول الدماغ والحبل الشوكي، تسببه البكتيريا أو الفيروسات. وتشمل أعراض السحايا الحمى الشديدة والصداع. وهو مرض خطير يجب معالجته من قبل الأطباء. وأفضل طريقة لتجنب المرض هي عن طريق أخذ المطعوم / اللقاح المناسب."
+  },
+  {
+    name: "الجرب",
+    text: "مرض جلدي ينتشر بسرعة من خلال الاتصال المباشر مع المصاب، ويظهر المرض على شكل بثور صغيرة سوداء اللون في ثنايا الجلد وبين أصابع اليدين والقدمين وخلف الكوع والركبة، وتتسبب بهذا المرض حشرة الجرب التي تحدث حكة شديدة في أماكن تواجدها وتزداد هذه الحكة أثناء الليل."
+  },
+  {
+    name: "الديدان المعوية",
+    text: "هي كائنات حية تتطفل على جسم الإنسان وتعيش في داخله مسببة له الأذى والضرر، تدخل الجسم عن طريق الأغذية والمياه الملوثة، ويمكن للأطفال أن يلتقطوا هذا المرض من خلال اللعب بالمياه الملوثة ثم وضع اليد في الفم. وتسبب هذه الإصابة آلاماً شديدة وهزالاً ونقصاً في الوزن بالإضافة إلى سوء التغذية والإسهال. وتعتبر النظافة هامة في الوقاية من الإصابة بالديدان المعوية. ولا بد لمعالجة المرض من مراجعة الطبيب."
+  },
+  {
+    name: "قمل الرأس",
+    text: "قمل الرأس هي حشرات صغيرة تعيش في شعر الإنسان. وينتشر هذا النوع من الحشرات بين الأطفال الذين يعيشون في بيئة تفتقر للنظافة. يمكن أن تنتقل هذه الحشرات من طفل لآخر عن طريق استخدام نفس فرشاة الشعر أو القبعة، إلخ. كما يمكن إزالة قمل الرأس عن طريق استخدام سائل استحمام خاص. عند انتشار القمل في المدرسة فإنه يجب القيام بتوعية الطلبة وأولياء الأمور بوسائل الحد من انتشاره."
+  },
+  {
+    name: "التهاب الكبد الوبائي (أ)",
+    text: "هو مرض يسبب التهاباً في الكبد. وينتشر في الأماكن التي تفتقر للوقاية الصحية ولشبكات الصرف الصحي. وقد ينتشر عبر الماء والطعام الملوثين. ولتجنب هذا المرض فإنه يجب أن يكون للطلبة إمكانية الوصول لمياه الشرب النظيفة، وأن تقدم المقاصف طعاماً تم تجهيزه وفقاً للشروط الصحية. ولهذا المرض أنواع مختلفة هي (ب وج) وهي شديدة الخطورة ولكنها لا تنتشر إلا عبر نقل الدم وسوائل الجسم الأخرى."
+  },
+  {
+    name: "تسوس الأسنان (النخر)",
+    text: "يتسبب تسوس الأسنان في نخرها والشعور بألم شديد فيها مما يتطلب معالجتها. ومن أهم أسباب تسوس الأسنان تناول الأطعمة التي تلتصق بها كالحلويات والشيبس وغيرها، مع قلة الاهتمام بتفريشها. وينتشر هذا المرض بشكل كبير بين طلبة المدارس. لذا على المعلمين تشجيع الطلبة على استخدام فرشاة الأسنان وتناول الوجبات الصحية."
+  }
+];
+
+const STORAGE_KEY = "diseases_tool_state_v1";
+let state = { answers: {}, name: "", grade: "", date: "" };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ state = JSON.parse(raw); }
+  }catch(e){}
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function buildSection(items, bodyId, prefix){
+  const body = document.getElementById(bodyId);
+  let rows = "";
+  items.forEach((text, iIdx) => {
+    const name = `${prefix}-${iIdx}`;
+    rows += `
+      <tr>
+        <td class="item-text">${iIdx+1}. ${text}</td>
+        <td class="opt-cell"><input type="radio" name="${name}" value="نعم"></td>
+        <td class="opt-cell"><input type="radio" name="${name}" value="لا"></td>
+      </tr>`;
+  });
+  body.innerHTML = rows;
+}
+
+function computeAndRender(){
+  const s1Yes = SECTION1_ITEMS.some((t, i) => state.answers[`s1-${i}`] === "نعم");
+  const s2Yes = SECTION2_ITEMS.some((t, i) => state.answers[`s2-${i}`] === "نعم");
+
+  document.getElementById("alertSection1").classList.toggle("show", s1Yes);
+  document.getElementById("alertSection2").classList.toggle("show", s2Yes);
+}
+
+function attachListeners(){
+  document.getElementById("section1Body").addEventListener("change", e => {
+    if(e.target.type === "radio"){
+      state.answers[e.target.name] = e.target.value;
+      saveState();
+      computeAndRender();
+    }
+  });
+  document.getElementById("section2Body").addEventListener("change", e => {
+    if(e.target.type === "radio"){
+      state.answers[e.target.name] = e.target.value;
+      saveState();
+      computeAndRender();
+    }
+  });
+}
+
+function restoreInputs(){
+  document.getElementById("studentName").value = state.name || "";
+  document.getElementById("studentGrade").value = state.grade || "";
+  document.getElementById("assessDate").value = state.date || "";
+
+  Object.keys(state.answers).forEach(name => {
+    const val = state.answers[name];
+    const radios = document.getElementsByName(name);
+    radios.forEach(r => { if(r.value === val) r.checked = true; });
+  });
+}
+
+document.getElementById("studentName").addEventListener("input", e => { state.name = e.target.value; saveState(); });
+document.getElementById("studentGrade").addEventListener("input", e => { state.grade = e.target.value; saveState(); });
+document.getElementById("assessDate").addEventListener("input", e => { state.date = e.target.value; saveState(); });
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if(confirm("هل أنت متأكد من رغبتك في تفريغ جميع الإجابات؟")){
+    state = { answers: {}, name: state.name, grade: state.grade, date: state.date };
+    saveState();
+    document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+    computeAndRender();
+  }
+});
+
+buildSection(SECTION1_ITEMS, "section1Body", "s1");
+buildSection(SECTION2_ITEMS, "section2Body", "s2");
+loadState();
+attachListeners();
+restoreInputs();
+computeAndRender();
+
+// ===== دليل الأمراض =====
+const diseaseGrid = document.getElementById("diseaseGrid");
+
+function renderDiseases(filter){
+  const f = (filter || "").trim();
+  diseaseGrid.innerHTML = "";
+  DISEASES.forEach((d, idx) => {
+    if(f && !d.name.includes(f) && !d.text.includes(f)) return;
+    const el = document.createElement("div");
+    el.className = "disease";
+    el.innerHTML = `
+      <div class="disease-header">
+        <div class="title">${d.name}</div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="disease-body">${d.text}</div>
+    `;
+    el.querySelector(".disease-header").addEventListener("click", () => {
+      el.classList.toggle("open");
+    });
+    diseaseGrid.appendChild(el);
+  });
+}
+renderDiseases("");
+
+document.getElementById("diseaseSearch").addEventListener("input", e => {
+  renderDiseases(e.target.value);
+});
+</script>
+</body>
+</html>
