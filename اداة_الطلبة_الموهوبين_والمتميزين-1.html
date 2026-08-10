@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أداة رقم (12): الطلبة الموهوبون والمتميزون</title>
+<style>
+  :root{
+    --brand:#c0392b;
+    --brand-dark:#8e2a1c;
+    --accent:#c0392b;
+    --accent-light:#fbe4e2;
+    --bg:#f6f3ee;
+    --card:#ffffff;
+    --line:#e7e0d4;
+    --text:#2b2b2b;
+    --muted:#7a7268;
+    --low:#4caf82;
+    --mid:#e0a72f;
+    --high:#d9534f;
+    --neutral:#9aa5ad;
+    --gift:#2f7d5a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI","Tahoma","Arial",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding:24px 12px 60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  .home-bar{display:flex;justify-content:flex-start;margin-bottom:10px;}
+  .btn-home{
+    display:inline-flex;align-items:center;gap:6px;background:#efe9dd;color:var(--text);
+    text-decoration:none;font-weight:700;font-size:13.5px;padding:8px 16px;border-radius:9px;
+    border:1px solid var(--line);transition:background .15s;
+  }
+  .btn-home:hover{background:#e5ddcc;}
+
+  header{
+    background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+    color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:22px;
+    box-shadow:0 6px 18px rgba(142,42,28,.25);
+  }
+  header h1{margin:0 0 6px;font-size:22px;}
+  header p{margin:0;opacity:.9;font-size:14px;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.03);
+  }
+
+  .student-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:640px){ .student-info{grid-template-columns:1fr;} }
+  .student-info label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .student-info input{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fbfaf7;
+  }
+
+  .domain{margin-bottom:18px;}
+  .domain-header{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--accent-light);border:1px solid #f2cfcb;border-radius:10px;
+    padding:10px 16px;cursor:pointer;user-select:none;
+  }
+  .domain-header .title{
+    font-weight:700;font-size:16px;color:#8e2a1c;display:flex;align-items:center;gap:10px;
+  }
+  .domain-header .badge{
+    font-size:12px;background:var(--accent);color:#fff;padding:2px 9px;border-radius:999px;
+  }
+  .domain-header .pct{
+    font-weight:800;font-size:15px;min-width:56px;text-align:center;padding:4px 8px;border-radius:8px;color:#fff;
+  }
+  .chev{transition:transform .2s;font-size:14px;color:var(--muted);}
+  .domain.open .chev{transform:rotate(180deg);}
+
+  .domain-body{display:none;padding:6px 4px 4px;}
+  .domain.open .domain-body{display:block;}
+  .domain-note{
+    font-size:12.5px;color:var(--muted);margin-top:8px;padding:8px 10px;
+    background:#fbfaf7;border-radius:8px;border:1px dashed var(--line);
+  }
+
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;}
+  thead th{
+    text-align:right;color:var(--muted);font-weight:600;font-size:12.5px;padding:6px 8px;border-bottom:2px solid var(--line);
+  }
+  thead th.opt{text-align:center;width:70px;}
+  tbody td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  .item-text{line-height:1.5;}
+  .opt-cell{text-align:center;}
+  input[type=radio]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer;}
+
+  .bar-outer{height:8px;background:#eee;border-radius:6px;overflow:hidden;margin-top:10px;}
+  .bar-inner{height:100%;width:0%;border-radius:6px;transition:width .4s ease;}
+
+  .summary-card h2{margin-top:0;font-size:18px;color:var(--brand-dark);}
+  .summary-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+  .summary-row{
+    display:grid;grid-template-columns:220px 1fr 60px;align-items:center;gap:12px;font-size:14px;
+  }
+  @media (max-width:640px){ .summary-row{grid-template-columns:130px 1fr 50px;font-size:13px;} }
+  .summary-row .label{font-weight:700;color:var(--text);}
+  .summary-row .pctnum{font-weight:800;text-align:left;}
+
+  .legend{
+    display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);
+    margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .overall-box{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--accent-light);border:1px solid #f2cfcb;border-radius:10px;padding:14px 18px;margin-top:16px;
+    flex-wrap:wrap;gap:10px;
+  }
+  .overall-box .msg{font-size:14px;line-height:1.6;}
+  .overall-box .big{font-size:26px;font-weight:900;}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+  button{
+    font-family:inherit;border:none;border-radius:9px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;
+  }
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-secondary{background:#efe9dd;color:var(--text);}
+  .btn-secondary:hover{background:#e5ddcc;}
+
+  footer{text-align:center;font-size:12px;color:var(--muted);margin-top:30px;}
+
+  /* ===== IEP (أداة 4) ===== */
+  .iep-btn-wrap{margin-top:16px;text-align:center;}
+  .btn-iep{
+    background:linear-gradient(135deg,#3a6ea5,#274d78);color:#fff;padding:13px 26px;
+    font-size:15px;border-radius:11px;box-shadow:0 4px 14px rgba(39,77,120,.3);
+  }
+  .btn-iep:hover{filter:brightness(1.08);}
+
+  #iepView{display:none;}
+  #iepView.show{display:block;}
+  #mainView.hide{display:none;}
+
+  .iep-header{
+    background:linear-gradient(135deg,#3a6ea5,#274d78);color:#fff;border-radius:16px;padding:20px 26px;margin-bottom:20px;
+  }
+  .iep-header h1{margin:0 0 6px;font-size:20px;}
+  .iep-header p{margin:0;opacity:.9;font-size:13.5px;}
+
+  .iep-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+
+  .iep-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:8px;}
+  @media (max-width:640px){ .iep-grid{grid-template-columns:1fr;} }
+  .iep-grid label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .iep-grid input{
+    width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fbfaf7;
+  }
+
+  .iep-section{margin-bottom:18px;}
+  .iep-section h3{background:#eef2f7;color:#274d78;border-radius:8px;padding:9px 14px;font-size:15px;margin:0 0 10px;}
+  .iep-two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:640px){ .iep-two-col{grid-template-columns:1fr;} }
+  .iep-box{
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fbfaf7;
+    font-size:13.5px;line-height:1.9;min-height:60px;
+  }
+  .iep-box.strength{border-color:#cdeada;background:#f3fbf6;}
+  .iep-box.weakness{border-color:#f6d6d4;background:#fdf5f4;}
+  .iep-box ul{margin:0;padding-inline-start:18px;}
+  .iep-box .empty-note{color:var(--muted);font-style:italic;}
+  .iep-box[contenteditable="true"]{cursor:text;transition:box-shadow .15s, border-color .15s;}
+  .iep-box[contenteditable="true"]:hover{border-color:#c9c0ac;}
+  .iep-box[contenteditable="true"]:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,0,0,.05);}
+  .iep-edit-hint{font-size:11.5px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;}
+
+  .domain-flag{
+    display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;
+    color:#fff;margin-inline-end:6px;margin-bottom:6px;
+  }
+
+  .notes-editable{
+    width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+    font-family:inherit;font-size:13.5px;line-height:1.8;background:#fff;
+    white-space:pre-wrap;word-wrap:break-word;
+  }
+  .notes-editable:empty::before{content:attr(data-placeholder);color:#aaa;}
+
+  .sig-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:640px){ .sig-grid{grid-template-columns:1fr;} }
+  .sig-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .sig-box label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  .sig-box input{width:100%;border:none;border-bottom:1px solid var(--line);padding:6px 2px;font-size:13.5px;background:transparent;}
+
+  #subjectGoalsTable td{padding:6px;}
+  #subjectGoalsTable input{
+    width:100%;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:13px;
+    font-family:inherit;background:#fff;
+  }
+  #subjectGoalsTable .goal-editable{
+    width:100%;min-height:38px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;
+    font-size:13px;font-family:inherit;background:#fff;white-space:pre-wrap;word-wrap:break-word;
+    line-height:1.6;
+  }
+  #subjectGoalsTable .goal-editable:empty::before{
+    content:attr(data-placeholder);color:#aaa;
+  }
+  .goal-row-remove{
+    background:#fdeceb;color:var(--high);border:none;border-radius:6px;
+    padding:4px 8px;font-size:12px;cursor:pointer;margin-top:4px;
+  }
+
+  @media print{
+    @page{ margin: 14mm 12mm; }
+    button, .actions, .iep-topbar, .iep-btn-wrap, .legend, .home-bar{display:none !important;}
+    body{background:#fff !important; padding:0;}
+    .wrap{max-width:100%;}
+    .chev{display:none;}
+
+    .card{box-shadow:none;border:1px solid #d8cdb0;border-radius:0;margin-bottom:10px;padding:12px 14px;page-break-inside:auto;}
+
+    .iep-section h3{ page-break-after:avoid; }
+    .iep-box{ page-break-inside:auto; }
+    .iep-two-col{ page-break-inside:auto; }
+    ul, ol{ page-break-inside:auto; }
+    li{ page-break-inside:avoid; }
+
+    .domain{ page-break-inside:auto; margin-bottom:12px; }
+    .domain-header{ page-break-after:avoid; page-break-inside:avoid; }
+    table{ page-break-inside:auto; }
+    thead{ display:table-header-group; }
+    tbody tr{ page-break-inside:avoid; page-break-after:auto; }
+
+    header{
+      background:#c0392b !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      color:#fff !important; border-radius:0; box-shadow:none; padding:14px 18px; margin-bottom:14px;
+      page-break-after:avoid;
+    }
+    .iep-header{
+      background:#274d78 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      color:#fff !important; border-radius:0; box-shadow:none; padding:14px 18px; margin-bottom:14px;
+    }
+    header h1, .iep-header h1{font-size:16px;}
+    header p, .iep-header p{font-size:11.5px;}
+
+    .domain-header{
+      background:#fbe4e2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      border:1px solid #f2cfcb;border-radius:0;
+    }
+    .domain-header .title{color:#8e2a1c;font-size:13px;}
+    .domain-header .badge{background:#a8321f !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .domain-header .pct{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .domain-body{display:block !important;}
+
+    table{font-size:11.5px;}
+    thead th{background:#fbeae8 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    tbody td{padding:5px 6px;}
+    input[type=radio]{width:13px;height:13px;}
+    .bar-outer{height:6px;}
+    .summary-card{page-break-before: always;}
+    .summary-row{font-size:12px;}
+
+    .overall-box{
+      background:#fbe4e2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      border:1px solid #f2cfcb;
+    }
+    .overall-box .big{font-size:20px;}
+
+    .iep-section h3{
+      background:#dbe6f2 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      color:#1f3a5f !important; font-size:12.5px; border-radius:0; padding:6px 10px;
+    }
+    .iep-grid input, .sig-box input, .notes-editable{
+      border:none; border-bottom:1px solid #999; border-radius:0; background:transparent; font-size:12px;
+      min-height:auto;
+    }
+    .iep-box{
+      background:#f7f9fc !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+      border:1px solid #cfd9e6; font-size:12px; border-radius:0;
+    }
+    .iep-box.strength{background:#f1f8f4 !important;border-color:#bfe0cd;}
+    .iep-box.weakness{background:#fbf1f0 !important;border-color:#eec6c3;}
+    .domain-flag{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    footer{font-size:10px;margin-top:10px;}
+
+    #subjectGoalsTable input{
+      border:none; border-bottom:1px solid #999; border-radius:0; background:transparent; font-size:12px;
+    }
+    #subjectGoalsTable .goal-editable{
+      border:none; border-bottom:1px solid #999; border-radius:0; background:transparent; font-size:12px;
+      min-height:auto;
+    }
+    .goal-row-remove{display:none !important;}
+    #addGoalRowBtn{display:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="mainView">
+
+  <div class="home-bar">
+    <a href="index.html" class="btn-home">🏠 الصفحة الرئيسية</a>
+  </div>
+
+  <header>
+    <h1>أداة رقم (12): الطلبة الموهوبون والمتميزون</h1>
+    <p>عبّئ صحيفة الرصد لتحديد مجالات موهبة الطالب واحتياجاته. في المجالات الأربعة الأولى: كلما ارتفعت النسبة كان ذلك مؤشراً أقوى على الموهبة ويستفيد الطالب من الإثراء. أما مجال "الاحتياجات النفسية/الاجتماعية" فارتفاع نسبته يعني حاجة الطالب لمساندة إضافية في هذا الجانب.</p>
+  </header>
+
+  <div class="card">
+    <div class="student-info">
+      <div>
+        <label>اسم الطالب</label>
+        <input type="text" id="studentName" placeholder="اكتب اسم الطالب">
+      </div>
+      <div>
+        <label>الصف</label>
+        <input type="text" id="studentGrade" placeholder="مثال: السادس أ">
+      </div>
+      <div>
+        <label>التاريخ</label>
+        <input type="date" id="assessDate">
+      </div>
+    </div>
+  </div>
+
+  <div id="domainsContainer"></div>
+
+  <div class="card summary-card">
+    <h2>ملخص نتائج الرصد حسب المجال</h2>
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="legend">
+      <span><span class="dot" style="background:var(--neutral)"></span> مجالات الموهبة (0–49%): مؤشر محدود حالياً</span>
+      <span><span class="dot" style="background:var(--gift)"></span> مجالات الموهبة (50–100%): مؤشر قوي — يستفيد من الإثراء</span>
+      <span><span class="dot" style="background:var(--high)"></span> الاحتياجات النفسية/الاجتماعية (أعلى من 50%): بحاجة لمساندة إضافية</span>
+    </div>
+
+    <div class="overall-box">
+      <div class="msg" id="overallMsg">قم بتعبئة الصحيفة لعرض ملخص مؤشرات الموهبة واحتياجات الطالب.</div>
+      <div class="big" id="overallPct" style="color:var(--muted);">—</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="btn-secondary" id="resetBtn">↺ تفريغ الصحيفة</button>
+    </div>
+
+    <div class="iep-btn-wrap">
+      <button class="btn-iep" id="goIepBtn">🗂️ إنشاء الخطة التربوية الفردية (أداة 4) بناءً على نتائج الرصد</button>
+    </div>
+  </div>
+
+  <footer>مبني على: حقيبة المعلم لتحديد احتياجات الطلبة المتنوعة والاستجابة لها — أداة رقم (12) — UNRWA</footer>
+</div>
+
+<!-- ============ IEP VIEW (أداة 4) ============ -->
+<div class="wrap" id="iepView">
+
+  <div class="home-bar">
+    <a href="index.html" class="btn-home">🏠 الصفحة الرئيسية</a>
+  </div>
+
+  <div class="iep-header">
+    <h1>أداة رقم (4): الخطة التربوية الفردية</h1>
+    <p>مبنية تلقائياً على نتائج صحيفة رصد الطلبة الموهوبين والمتميزين (أداة 12): مجالات الإثراء = مجالات الموهبة التي نسبتها أعلى من 50%، ومجال المساندة الإضافية = الاحتياجات النفسية/الاجتماعية إن تجاوزت 50%.</p>
+  </div>
+
+  <div class="iep-topbar">
+    <button class="btn-secondary" id="backToRasdBtn">→ الرجوع لصحيفة الرصد</button>
+    <div class="actions" style="margin:0;">
+      <button class="btn-primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="btn-secondary" id="regenBtn">↻ إعادة توليد الخطة من نتائج الرصد</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="iep-grid">
+      <div><label>اسم الطالب</label><input type="text" id="iepStudentName"></div>
+      <div><label>المدرسة</label><input type="text" id="iepSchool"></div>
+      <div><label>الصف</label><input type="text" id="iepGrade"></div>
+      <div><label>اسم المعلم</label><input type="text" id="iepTeacher"></div>
+      <div><label>العام الدراسي</label><input type="text" id="iepYear" placeholder="مثال: 2026/2025"></div>
+      <div><label>الفصل الدراسي</label><input type="text" id="iepSemester" placeholder="الأول / الثاني"></div>
+    </div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>1. الأسباب الرئيسة التي دعت لإعداد الخطة</h3>
+    <div class="iep-box" id="iepReasons" contenteditable="true"></div>
+    <div class="iep-edit-hint">✏️ يمكنك النقر والتعديل مباشرة على أي نص مقترح في هذه الخطة.</div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>2. نظرة عامة لقدرات الطالب واحتياجاته — وفق أداة 12</h3>
+    <div class="iep-two-col">
+      <div>
+        <div style="font-weight:700;margin-bottom:8px;color:var(--brand-dark);">أ. مؤشرات الموهبة ونقاط القوة</div>
+        <div class="iep-box strength" id="iepStrengths" contenteditable="true"></div>
+      </div>
+      <div>
+        <div style="font-weight:700;margin-bottom:8px;color:var(--high);">ب. الاحتياجات النفسية/الاجتماعية التي يحتاج الطالب فيها إلى مساندة</div>
+        <div class="iep-box weakness" id="iepWeaknesses" contenteditable="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>3. توصيات فريق مساندة الطلبة (مستندة إلى طرق الاستجابة في أداة 12)</h3>
+    <div style="font-weight:700;margin-bottom:8px;">أ. التعديلات وتكييف بيئة وموارد التعليم والتعلم (إثراء)</div>
+    <div class="iep-box" id="iepSupportEnv" contenteditable="true" style="margin-bottom:14px;"></div>
+    <div style="font-weight:700;margin-bottom:8px;">ب. المساندة الفردية المطلوبة في المدرسة</div>
+    <div class="iep-box" id="iepSupportIndividual" contenteditable="true"></div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>ج. الإحالة وخدمات المساندة الإضافية</h3>
+    <div class="iep-box" id="iepReferral" contenteditable="true"></div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>4. ملاحظات أولياء الأمور</h3>
+    <div class="notes-editable" id="iepParentNotes" contenteditable="true" data-placeholder="اكتب هنا ملاحظات ولي الأمر بعد مناقشة الخطة معه..."></div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>5. التوقيع</h3>
+    <div class="sig-grid">
+      <div class="sig-box"><label>التاريخ</label><input type="date" id="iepSigDate"></div>
+      <div class="sig-box"><label>المعلم</label><input type="text" id="iepSigTeacher"></div>
+      <div class="sig-box"><label>عضو فريق مساندة الطلبة</label><input type="text" id="iepSigSupport"></div>
+    </div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>6. المتابعة والتعديلات وتواريخها</h3>
+    <div class="notes-editable" id="iepFollowUp" contenteditable="true" data-placeholder="سجّل هنا ملاحظات المتابعة والتعديلات على الخطة مع التاريخ..."></div>
+  </div>
+
+  <div class="card iep-section">
+    <h3>7. الملاحظات الفصلية والختامية وتواريخها</h3>
+    <div class="notes-editable" id="iepFinalNotes" contenteditable="true" data-placeholder="سجّل هنا الملاحظات الفصلية أو الختامية مع التاريخ..."></div>
+  </div>
+
+  <div class="card iep-section card-table" id="subjectPlanSection">
+    <h3>8. الخطة التربوية الفردية لمادة: <input type="text" id="subjectName" style="display:inline-block;width:220px;border:none;border-bottom:1px solid var(--line);background:transparent;font-size:14px;padding:2px 6px;" placeholder="اكتب اسم المادة (مثال: برنامج الإثراء)"></h3>
+
+    <div style="font-weight:700;margin-bottom:8px;">أ. الأهداف العامة</div>
+    <div class="iep-box" id="subjectGeneralGoals" contenteditable="true" style="margin-bottom:16px;"></div>
+
+    <div style="font-weight:700;margin-bottom:8px;">ب. الأهداف الخاصة</div>
+    <table id="subjectGoalsTable">
+      <thead>
+        <tr>
+          <th style="width:40%;">الهدف الخاص</th>
+          <th style="width:18%;">تاريخ البدء</th>
+          <th style="width:18%;">تاريخ الإنتهاء</th>
+          <th style="width:24%;">الملاحظات</th>
+        </tr>
+      </thead>
+      <tbody id="subjectGoalsBody"></tbody>
+    </table>
+    <div class="actions" style="margin-top:10px;">
+      <button class="btn-secondary" id="addGoalRowBtn">➕ إضافة هدف خاص</button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+    <button class="btn-secondary" id="saveIepBtn">💾 حفظ الخطة</button>
+  </div>
+
+  <footer>مبني على: حقيبة المعلم لتحديد احتياجات الطلبة المتنوعة والاستجابة لها — أداة رقم (4) — UNRWA</footer>
+</div>
+
+<script>
+// ملاحظة: المجالات الأربعة الأولى عباراتها إيجابية (مؤشرات موهبة)، والمجال الخامس فقط
+// (الاحتياجات النفسية/الاجتماعية) عباراته سلبية كباقي الأدوات.
+const DOMAINS = [
+  {
+    key: "academic",
+    name: "الموهبة الأكاديمية",
+    isGiftDomain: true,
+    items: [
+      "يحب القراءة/يقرأ الكتب والمجلات بشكل يفوق زملاءه.",
+      "تحصيله الأكاديمي يقع ضمن أعلى المستويات.",
+      "يستخدم قاموساً لغوياً غنياً بالمفردات والتعابير.",
+      "يتعلم المهارات الأساسية بشكل أسرع وبتدريب أقل من زملائه.",
+      "يستوعب المفاهيم المجردة ويعمل عليها.",
+      "شديد الملاحظة وينتبه للتفاصيل.",
+      "يعمل بشكل مستقل ويركز لفترات طويلة.",
+      "ينهي عمله بسرعة.",
+      "يسأل أسئلة ذكية."
+    ]
+  },
+  {
+    key: "creative",
+    name: "الموهبة الإبداعية والفنية والعملية",
+    isGiftDomain: true,
+    items: [
+      "يظهر اهتماماً شديداً بموضوع محدد كالفن والموسيقى والرياضة والشعر.",
+      "يظهر موهبة استثنائية في مهارة معينة كالفن والموسيقى والرياضة والشعر.",
+      "لديه مواهب اجتماعية ويتواصل بشكل جيد مع زملائه ومع الراشدين.",
+      "لديه مواهب عملية، على سبيل المثال: ماهر في حل المشكلات العملية والبناء والإصلاح.",
+      "يستمتع بالأنشطة الإبداعية والعملية والتعبيرية.",
+      "مبدع جداً وقادر على الإتيان بأفكار فريدة وجديدة."
+    ]
+  },
+  {
+    key: "criticalthinking",
+    name: "التفكير النقدي والإبداعي",
+    isGiftDomain: true,
+    items: [
+      "يظهر حب الاستطلاع ومتحمس للاكتشاف والتجربة.",
+      "يعالج المهام والمشاكل بأسلوب منظم وموجه وفعال.",
+      "يميل لعدم الموافقة والتساؤل.",
+      "يبحث عن إجابات للأسئلة حول كيف ولماذا، ويستطيع وضع فرضيات.",
+      "يستطيع وضع احتمالات أو نتائج أو أفكار، ويلاحظ العلاقات السببية بسهولة.",
+      "يستطيع نقد وتقييم ورصد التناقضات والتشابهات والاختلافات.",
+      "يستمتع بالتحديات الفكرية والألعاب العقلية."
+    ]
+  },
+  {
+    key: "motivation",
+    name: "الدافعية ومهارات الدراسة",
+    isGiftDomain: true,
+    items: [
+      "يظهر حافزاً فعلياً للتعلم والمعرفة والاستكشاف.",
+      "مثابر ولا يستسلم بسهولة.",
+      "يضع توقعات عالية لنفسه/ها (السعي نحو الكمال).",
+      "لديه رغبة شديدة في أداء المهام الموكلة إليه.",
+      "نشيط جداً وطاقته لا حدود لها.",
+      "يشعر بالملل ويصعب ضبطه حين لا تشكل المهام تحدياً كافياً لقدراته."
+    ]
+  },
+  {
+    key: "socialneeds",
+    name: "الاحتياجات النفسية / الاجتماعية",
+    isGiftDomain: false,
+    items: [
+      "حساس عاطفياً.",
+      "يفضل مرافقة الأطفال الأكبر منه سناً والبالغين.",
+      "يشعر بأن الآخرين لا يفهمونه.",
+      "يشعر بأنه مختلف ومنعزل عن أقرانه.",
+      "يجد صعوبة في التعامل مع خيبات الأمل."
+    ]
+  }
+];
+
+// scoring: غالباً = 2, أحياناً = 1, نادراً = 0
+const SCORE_MAP = { "غالباً": 2, "أحياناً": 1, "نادراً": 0 };
+const STORAGE_KEY = "gifted_tool_state_v1";
+const IEP_STORAGE_KEY = "gifted_iep_tool_state_v1";
+
+// طرق الاستجابة المقترحة لكل مجال - مستمدة من أداة رقم (12)
+const RESPONSE_METHODS = {
+  academic: [
+    "زود الطلبة بأنشطة إضافية تناسب قدراتهم، وليس مجرد أعمال إضافية.",
+    "زود الطلبة بأنشطة إثرائية تعمق معارفهم (كالمشروعات الفردية والأنشطة البحثية والقراءات الإضافية والكتب ذات العلاقة بالموضوع المحدد، والأنشطة الكتابية الفردية ككتابة المذكرات والقصص وملفات الحقائق).",
+    "كلّف الطلبة بمهمات وأنشطة توظف فيها مهارات التفكير العليا (كالتحليل والتركيب والتقويم).",
+    "نظّم الرحلات الميدانية واستقبل زائرين للحديث مع الطلبة حول القضايا المختلفة.",
+    "كلّف الطلبة بمسؤوليات ومهمات يوظفون من خلالها مواهبهم (مثال: كتابة الملاحظات، قيادة المجموعات، المشاركة في المسابقات، مساعدة المعلم والآخرين، إعداد العروض، تأليف كتاب أو الكتابة حول موضوع معين وتقديمه لباقي الصف).",
+    "شجّع الطلبة على استخدام المكتبة وتكنولوجيا المعلومات والاتصال والبحث لتطوير مهاراتهم."
+  ],
+  creative: [
+    "أتِح الفرصة للطلبة لممارسة إبداعاتهم في الصف وكجزء من الأنشطة المرافقة للمنهاج.",
+    "احتفل بإبداعات الطلبة وأظهر تقديرك لإبداعاتهم الفنية والعملية بالإضافة إلى إنجازاتهم الأكاديمية؛ فهذا مهم بشكل خاص للطلبة غير المتفوقين أكاديمياً ولكنهم مبدعون فنياً أو رياضياً.",
+    "نظّم المسابقات والمعارض والمشاريع لإعطاء الفرصة للمبدعين لممارسة إبداعاتهم وإظهار مواهبهم.",
+    "أتِح الفرص للطلبة المتميزين اجتماعياً للقيام بمساعدة الآخرين والعناية بالبيئة المدرسية والصفية.",
+    "وفّر التغذية الراجعة للطلبة ولذويهم حول المواهب الإبداعية والفنية والاجتماعية والعملية بالإضافة إلى الإنجازات الأكاديمية."
+  ],
+  criticalthinking: [
+    "اعمل على إيجاد مناخ صفي يشجع على التساؤلات والحوار.",
+    "ابدأ درسك بإثارة الأسئلة المفتوحة والمبنية على المعرفة السابقة للطلبة لمساعدتهم على تطبيقها وإثارة التساؤلات التي توضح الأفكار الجديدة.",
+    "اسأل أسئلة من نوع (ماذا لو) لإتاحة الفرصة للطلبة للتفكير ببدائل متعددة.",
+    "وفّر مزيداً من الأسئلة لمساعدة الطلبة على الدفاع عن رأيهم أو النقد أو المقارنة أو التقويم، لتمكينهم من بناء معرفة عميقة وذات معنى.",
+    "نظّم أنشطة تتيح للطلبة التجريب والاستكشاف والتصميم (كحل المشكلات وإقامة المعارض العلمية وتصميم المسابقات والمشاريع).",
+    "نظّم أنشطة تتيح للطلبة التخيل والتعبير عن النفس والإبداع (ككتابة القصص والمشاريع الفنية والعلمية والعصف الذهني)."
+  ],
+  motivation: [
+    "اعمل على إيجاد مناخ تعليمي يتسم بالمتعة ويمنح الرضا بعيداً عن الضغوط.",
+    "قدّم تغذية راجعة بناءة حول نقاط القوة ونقاط الضعف لدى الطلبة.",
+    "قدّم للطلبة ذوي القدرات العقلية المتميزة الفرص الكافية والمناسبة لقدراتهم؛ فهؤلاء الطلبة قد يكونون متمردين ولا يحتملون الشعور بالملل، وقد يمتنعون عن أداء مهمات يعتقدون بعدم جدواها، ويقضون وقتهم في القراءة الجانبية بدلاً من مهمات لا تتحدى قدراتهم."
+  ],
+  socialneeds: [
+    "شجّع طلبتك على بناء صورة شخصية واقعية لذواتهم وساعدهم على التعامل مع خيبة الأمل والفشل، وعليك كما على الطالب عدم توقع الكمال في كل الأوقات.",
+    "عامل الطلبة بعدالة ولا تعطِ امتيازات لبعضهم دون بعض، ولا تبنِ توقعات عالية غير واقعية حولهم.",
+    "أعطِ الطلبة فرصاً للتعامل مع طلبة أكبر سناً، وشجعهم أيضاً على اللعب والتفاعل الاجتماعي مع من هم في مثل عمرهم.",
+    "تأكد من أن طلبتك لا يتعرضون للتنمر أو التمييز ضدهم من قبل آخرين على أساس اختلافهم عن الآخرين.",
+    "تأكد من أن طلبتك لا يتنمرون على الآخرين ولا يتحيزون ضد من ليس لديهم نفس القدرات."
+  ]
+};
+
+// تصنيف كل بند: "env" = تعديل/تكييف بيئي أو نشاط جماعي عام، "ind" = مساندة فردية مباشرة مع الطالب
+const RESPONSE_TYPES = {
+  academic:         ["env","env","ind","env","ind","ind"],
+  creative:         ["env","ind","env","ind","ind"],
+  criticalthinking: ["env","env","ind","ind","env","env"],
+  motivation:       ["env","ind","ind"],
+  socialneeds:      ["ind","env","ind","env","env"]
+};
+
+const container = document.getElementById("domainsContainer");
+const summaryGrid = document.getElementById("summaryGrid");
+
+let state = { answers: {}, name: "", grade: "", date: "" };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ state = JSON.parse(raw); }
+  }catch(e){}
+}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function buildDomains(){
+  DOMAINS.forEach((domain, dIdx) => {
+    const domainEl = document.createElement("div");
+    domainEl.className = "domain" + (dIdx===0 ? " open" : "");
+    domainEl.id = "domain-" + domain.key;
+
+    const header = document.createElement("div");
+    header.className = "domain-header";
+    header.innerHTML = `
+      <div class="title"><span class="chev">▾</span> ${domain.name} <span class="badge">${domain.items.length} عبارات</span></div>
+      <div class="pct" id="pct-${domain.key}" style="background:#ccc;">0%</div>
+    `;
+    header.addEventListener("click", () => { domainEl.classList.toggle("open"); });
+
+    const body = document.createElement("div");
+    body.className = "domain-body";
+
+    let rows = "";
+    domain.items.forEach((text, iIdx) => {
+      const name = `${domain.key}-${iIdx}`;
+      rows += `
+        <tr>
+          <td class="item-text">${iIdx+1}. ${text}</td>
+          <td class="opt-cell"><input type="radio" name="${name}" value="غالباً" data-domain="${domain.key}"></td>
+          <td class="opt-cell"><input type="radio" name="${name}" value="أحياناً" data-domain="${domain.key}"></td>
+          <td class="opt-cell"><input type="radio" name="${name}" value="نادراً" data-domain="${domain.key}"></td>
+        </tr>`;
+    });
+
+    const noteText = domain.isGiftDomain
+      ? "ملاحظة: هذا مجال موهبة — كلما ارتفعت النسبة كان ذلك مؤشراً أقوى على تميّز الطالب في هذا المجال ويستفيد من الإثراء، وليس مؤشر ضعف."
+      : "ملاحظة: هذا المجال يرصد احتياجات نفسية/اجتماعية — ارتفاع النسبة هنا يعني حاجة الطالب لمساندة إضافية.";
+
+    body.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>العبارة</th>
+            <th class="opt">غالباً</th>
+            <th class="opt">أحياناً</th>
+            <th class="opt">نادراً</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="bar-outer"><div class="bar-inner" id="bar-${domain.key}"></div></div>
+      <div class="domain-note">${noteText}</div>
+    `;
+
+    domainEl.appendChild(header);
+    domainEl.appendChild(body);
+    container.appendChild(domainEl);
+
+    const sumRow = document.createElement("div");
+    sumRow.className = "summary-row";
+    sumRow.innerHTML = `
+      <div class="label">${domain.name}</div>
+      <div class="bar-outer"><div class="bar-inner" id="sbar-${domain.key}"></div></div>
+      <div class="pctnum" id="spct-${domain.key}">0%</div>
+    `;
+    summaryGrid.appendChild(sumRow);
+  });
+}
+
+function colorForDomain(pct, isGiftDomain){
+  const cs = getComputedStyle(document.documentElement);
+  if(isGiftDomain){
+    if(pct < 50) return cs.getPropertyValue('--neutral').trim();
+    return cs.getPropertyValue('--gift').trim();
+  }
+  if(pct <= 33) return cs.getPropertyValue('--low').trim();
+  if(pct <= 66) return cs.getPropertyValue('--mid').trim();
+  return cs.getPropertyValue('--high').trim();
+}
+
+function levelLabel(pct, isGiftDomain){
+  if(isGiftDomain){
+    if(pct < 50) return "مؤشر محدود حالياً في هذا المجال";
+    if(pct < 75) return "مؤشر جيد على الموهبة — يستفيد من الإثراء في هذا المجال";
+    return "مؤشر قوي جداً على الموهبة — يستفيد بشكل كبير من الإثراء في هذا المجال";
+  }
+  if(pct <= 33) return "حاجة منخفضة — متابعة عادية";
+  if(pct <= 66) return "حاجة متوسطة — بحاجة لمتابعة ومساندة إضافية";
+  return "حاجة مرتفعة — بحاجة لمساندة نفسية/اجتماعية إضافية";
+}
+
+function computeAndRender(){
+  const giftDomains = DOMAINS.filter(d => d.isGiftDomain);
+  let giftScore = 0, giftMax = 0;
+
+  DOMAINS.forEach(domain => {
+    let score = 0, max = domain.items.length * 2;
+    domain.items.forEach((text, iIdx) => {
+      const key = `${domain.key}-${iIdx}`;
+      const val = state.answers[key];
+      if(val) score += SCORE_MAP[val];
+    });
+    const pct = max ? Math.round((score/max)*100) : 0;
+    if(domain.isGiftDomain){ giftScore += score; giftMax += max; }
+
+    const color = colorForDomain(pct, domain.isGiftDomain);
+    const pctBadge = document.getElementById(`pct-${domain.key}`);
+    pctBadge.textContent = pct + "%";
+    pctBadge.style.background = color;
+
+    const bar = document.getElementById(`bar-${domain.key}`);
+    bar.style.width = pct + "%";
+    bar.style.background = color;
+
+    const sbar = document.getElementById(`sbar-${domain.key}`);
+    sbar.style.width = pct + "%";
+    sbar.style.background = color;
+
+    const spct = document.getElementById(`spct-${domain.key}`);
+    spct.textContent = pct + "%";
+    spct.style.color = color;
+    spct.title = levelLabel(pct, domain.isGiftDomain);
+  });
+
+  const giftOverallPct = giftMax ? Math.round((giftScore/giftMax)*100) : 0;
+  const socialDomain = DOMAINS.find(d => !d.isGiftDomain);
+  const socialKey = socialDomain.key;
+  const socialItems = socialDomain.items;
+  let socialScore = 0;
+  socialItems.forEach((t, i) => { const v = state.answers[`${socialKey}-${i}`]; if(v) socialScore += SCORE_MAP[v]; });
+  const socialPct = socialItems.length ? Math.round((socialScore/(socialItems.length*2))*100) : 0;
+
+  const overallColor = colorForDomain(giftOverallPct, true);
+  const overallBox = document.getElementById("overallPct");
+  overallBox.textContent = giftOverallPct + "%";
+  overallBox.style.color = overallColor;
+
+  document.getElementById("overallMsg").innerHTML =
+    `<strong>المؤشر العام للموهبة (متوسط 4 مجالات):</strong> ${levelLabel(giftOverallPct, true)}.<br>
+     <strong>الاحتياجات النفسية/الاجتماعية:</strong> ${socialPct}% — ${levelLabel(socialPct, false)}.`;
+}
+
+function attachListeners(){
+  container.addEventListener("change", (e) => {
+    if(e.target.type === "radio"){
+      const name = e.target.name;
+      state.answers[name] = e.target.value;
+      saveState();
+      computeAndRender();
+    }
+  });
+}
+
+function restoreInputs(){
+  document.getElementById("studentName").value = state.name || "";
+  document.getElementById("studentGrade").value = state.grade || "";
+  document.getElementById("assessDate").value = state.date || "";
+
+  Object.keys(state.answers).forEach(name => {
+    const val = state.answers[name];
+    const radios = document.getElementsByName(name);
+    radios.forEach(r => { if(r.value === val) r.checked = true; });
+  });
+}
+
+document.getElementById("studentName").addEventListener("input", e => { state.name = e.target.value; saveState(); });
+document.getElementById("studentGrade").addEventListener("input", e => { state.grade = e.target.value; saveState(); });
+document.getElementById("assessDate").addEventListener("input", e => { state.date = e.target.value; saveState(); });
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if(confirm("هل أنت متأكد من رغبتك في تفريغ جميع الإجابات؟")){
+    state = { answers: {}, name: state.name, grade: state.grade, date: state.date };
+    saveState();
+    document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+    computeAndRender();
+  }
+});
+
+loadState();
+buildDomains();
+attachListeners();
+restoreInputs();
+computeAndRender();
+
+// ================== IEP (أداة 4) ==================
+
+let iepState = {
+  studentName:"", school:"", grade:"", teacher:"", year:"", semester:"",
+  parentNotes:"", sigDate:"", sigTeacher:"", sigSupport:"",
+  followUp:"", finalNotes:"",
+  subjectName:"", subjectGoals: [],
+  boxes: {}, generatedOnce: false
+};
+
+function loadIepState(){
+  try{
+    const raw = localStorage.getItem(IEP_STORAGE_KEY);
+    if(raw){ iepState = JSON.parse(raw); }
+  }catch(e){}
+}
+function saveIepState(){
+  try{ localStorage.setItem(IEP_STORAGE_KEY, JSON.stringify(iepState)); }catch(e){}
+}
+
+// يحول عبارة سلبية (تُستخدم في مجال الاحتياجات النفسية/الاجتماعية فقط) إلى صياغة تعكس القوة عند إجابة "نادراً"
+function negateSkillText(text){
+  if(!text) return text;
+  return "نادراً ما " + text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+const EDITABLE_BOX_IDS = ["iepReasons","iepStrengths","iepWeaknesses","iepSupportEnv","iepSupportIndividual","iepReferral","subjectGeneralGoals"];
+
+function captureEditableBoxes(){
+  iepState.boxes = iepState.boxes || {};
+  EDITABLE_BOX_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) iepState.boxes[id] = el.innerHTML;
+  });
+  saveIepState();
+}
+function restoreEditableBoxes(){
+  EDITABLE_BOX_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && iepState.boxes && iepState.boxes[id] !== undefined){
+      el.innerHTML = iepState.boxes[id];
+    }
+  });
+}
+
+function computeDomainResults(){
+  return DOMAINS.map(domain => {
+    let score = 0, max = domain.items.length * 2;
+    const items = domain.items.map((text, iIdx) => {
+      const key = `${domain.key}-${iIdx}`;
+      const val = state.answers[key] || null;
+      if(val) score += SCORE_MAP[val];
+      return { text, idx: iIdx, val };
+    });
+    const pct = max ? Math.round((score/max)*100) : 0;
+    return { key: domain.key, name: domain.name, pct, items, isGiftDomain: domain.isGiftDomain };
+  });
+}
+
+function generateIepFromAssessment(){
+  const results = computeDomainResults();
+  const giftDomainsNeed = results.filter(d => d.isGiftDomain && d.pct >= 50);
+  const socialDomain = results.find(d => !d.isGiftDomain);
+  const socialNeedsFlag = socialDomain && socialDomain.pct > 50;
+  const needDomains = giftDomainsNeed.concat(socialNeedsFlag ? [socialDomain] : []);
+  const answeredAny = results.some(d => d.items.some(it => it.val));
+
+  const reasonsBox = document.getElementById("iepReasons");
+  if(!answeredAny){
+    reasonsBox.innerHTML = `<span class="empty-note">لم تُعبَّأ صحيفة الرصد بعد. الرجاء العودة إلى صحيفة الرصد وتعبئتها أولاً لبناء الخطة تلقائياً.</span>`;
+  } else if(needDomains.length === 0){
+    reasonsBox.innerHTML = `<span class="empty-note">لم تظهر مؤشرات موهبة قوية (50% فأكثر) ولا احتياجات نفسية/اجتماعية بارزة وفق نتائج الرصد الحالية.</span>`;
+  } else {
+    let html = `<div>بناءً على نتائج صحيفة رصد الطلبة الموهوبين والمتميزين (أداة 12):</div><div style="margin-top:10px;">`;
+    if(giftDomainsNeed.length){
+      html += `<div style="margin-bottom:6px;">ظهرت مؤشرات موهبة قوية تستدعي الإثراء في:</div>`;
+      giftDomainsNeed.forEach(d => {
+        html += `<span class="domain-flag" style="background:var(--gift);">${d.name} — ${d.pct}%</span>`;
+      });
+    }
+    if(socialNeedsFlag){
+      html += `<div style="margin-top:10px;margin-bottom:6px;">كما ظهرت حاجة لمساندة نفسية/اجتماعية إضافية:</div>
+        <span class="domain-flag" style="background:${colorForDomain(socialDomain.pct,false)};">${socialDomain.name} — ${socialDomain.pct}%</span>`;
+    }
+    html += `</div>`;
+    reasonsBox.innerHTML = html;
+  }
+
+  const strengthsBox = document.getElementById("iepStrengths");
+  const weaknessesBox = document.getElementById("iepWeaknesses");
+
+  let strengthsHTML = "";
+  results.forEach(d => {
+    if(d.isGiftDomain){
+      const strengthItems = d.items.filter(it => it.val === "غالباً").map(it => it.text);
+      if(strengthItems.length){
+        strengthsHTML += `<div style="margin-top:8px;"><strong>${d.name} (${d.pct}%):</strong><ul>${strengthItems.map(t=>`<li>${t}</li>`).join("")}</ul></div>`;
+      }
+    } else {
+      const rareItems = d.items.filter(it => it.val === "نادراً").map(it => negateSkillText(it.text));
+      if(rareItems.length){
+        strengthsHTML += `<div style="margin-top:8px;"><strong>${d.name}:</strong><ul>${rareItems.map(t=>`<li>${t}</li>`).join("")}</ul></div>`;
+      }
+    }
+  });
+  strengthsBox.innerHTML = strengthsHTML || `<span class="empty-note">لم تُسجَّل مؤشرات قوة واضحة بعد — عبّئ صحيفة الرصد أولاً.</span>`;
+
+  const socialWeak = socialDomain ? socialDomain.items.filter(it => it.val === "غالباً").map(it => it.text) : [];
+  weaknessesBox.innerHTML = socialWeak.length
+    ? `<div><strong>${socialDomain.name} (${socialDomain.pct}%):</strong><ul>${socialWeak.map(t=>`<li>${t}</li>`).join("")}</ul></div>`
+    : `<span class="empty-note">لا توجد احتياجات نفسية/اجتماعية بارزة (عبارات بإجابة "غالباً") وفق نتائج الرصد الحالية.</span>`;
+
+  const supportEnvBox = document.getElementById("iepSupportEnv");
+  const supportIndBox = document.getElementById("iepSupportIndividual");
+  if(needDomains.length === 0){
+    const emptyMsg = `<span class="empty-note">لا توجد مجالات بحاجة لتوصيات مكثفة حالياً. راجع الأداة دورياً لمتابعة تطور الطالب.</span>`;
+    supportEnvBox.innerHTML = emptyMsg;
+    supportIndBox.innerHTML = emptyMsg;
+  } else {
+    let envHtml = "", indHtml = "";
+    needDomains.forEach(d => {
+      const methods = RESPONSE_METHODS[d.key] || [];
+      const types = RESPONSE_TYPES[d.key] || [];
+      const envItems = methods.filter((m, i) => types[i] === "env");
+      const indItems = methods.filter((m, i) => types[i] !== "env");
+      if(envItems.length){
+        envHtml += `<div style="margin-top:10px;"><strong>مجال ${d.name} (${d.pct}%):</strong><ul>${envItems.map(m=>`<li>${m}</li>`).join("")}</ul></div>`;
+      }
+      if(indItems.length){
+        indHtml += `<div style="margin-top:10px;"><strong>مجال ${d.name} (${d.pct}%):</strong><ul>${indItems.map(m=>`<li>${m}</li>`).join("")}</ul></div>`;
+      }
+    });
+    supportEnvBox.innerHTML = envHtml || `<span class="empty-note">لا توجد تعديلات بيئية مقترحة محددة لهذه المجالات.</span>`;
+    supportIndBox.innerHTML = indHtml || `<span class="empty-note">لا توجد مساندة فردية مقترحة محددة لهذه المجالات.</span>`;
+  }
+
+  const referralBox = document.getElementById("iepReferral");
+  const strongGiftDomains = results.filter(d => d.isGiftDomain && d.pct >= 75);
+
+  if(socialDomain && socialDomain.pct > 66){
+    referralBox.innerHTML = `
+      <div style="color:var(--high);font-weight:700;margin-bottom:6px;">⚠ نسبة مرتفعة في الاحتياجات النفسية/الاجتماعية — يُنصح بمراجعة أداة (5) والتنسيق مع المرشد.</div>
+      <ul>
+        <li>مشاركة نتائج الرصد مع فريق مساندة الطلبة والمرشد المدرسي.</li>
+        <li>الرجوع إلى أداة رقم (5) المتصلة بالاحتياجات النفسية/الاجتماعية لمزيد من التفصيل والمتابعة.</li>
+        <li>إشراك ولي الأمر في دعم الطالب اجتماعياً وعاطفياً.</li>
+      </ul>`;
+  } else if(strongGiftDomains.length >= 2){
+    referralBox.innerHTML = `
+      <ul>
+        <li>التنسيق مع المختص التربوي لمناقشة إمكانية إحالة الطالب لبرنامج إثراء أو رعاية موهوبين إن توفر.</li>
+        <li>مشاركة نتائج الرصد مع فريق مساندة الطلبة لتوثيق مؤشرات الموهبة القوية ومتابعتها.</li>
+      </ul>`;
+  } else if(needDomains.length){
+    referralBox.innerHTML = `
+      <ul>
+        <li>مشاركة نتائج صحيفة الرصد مع فريق مساندة الطلبة لمتابعة المجالات ذات النسب المرتفعة.</li>
+      </ul>`;
+  } else {
+    referralBox.innerHTML = `<span class="empty-note">لا توجد حاجة حالية للإحالة وفق نتائج الرصد.</span>`;
+  }
+
+  // ===== الخطة التربوية الفردية لمادة (الصفحة الثالثة من أداة 4) =====
+  if(!iepState.subjectName){
+    iepState.subjectName = "برنامج الإثراء";
+    document.getElementById("subjectName").value = iepState.subjectName;
+    saveIepState();
+  }
+  const generalGoalsBox = document.getElementById("subjectGeneralGoals");
+  if(needDomains.length === 0){
+    generalGoalsBox.innerHTML = `<span class="empty-note">لا توجد مجالات بحاجة لأهداف مكثفة حالياً وفق نتائج الرصد.</span>`;
+  } else {
+    const goals = needDomains.map(d => d.isGiftDomain
+      ? `توفير أنشطة إثرائية تناسب موهبة الطالب في مجال "${d.name}" وتنمّيها بشكل مستمر (مؤشر الموهبة الحالي: ${d.pct}%).`
+      : `تقديم مساندة نفسية/اجتماعية للطالب لمعالجة الاحتياجات الظاهرة في مجال "${d.name}" (النسبة الحالية: ${d.pct}%).`
+    );
+    generalGoalsBox.innerHTML = `<ul>${goals.map(g=>`<li>${g}</li>`).join("")}</ul>`;
+  }
+
+  if(iepState.subjectGoals.length === 0 && needDomains.length > 0){
+    needDomains.forEach(d => {
+      let goalText;
+      if(d.isGiftDomain){
+        const strongTexts = d.items.filter(it => it.val === "غالباً").map(it => it.text);
+        goalText = strongTexts.length
+          ? `تنمية موهبة الطالب من خلال إثراء مرتبط بـ: ${strongTexts[0]}${strongTexts.length > 1 ? " (ومؤشرات أخرى ضمن مجال " + d.name + ")" : ""}`
+          : `تقديم أنشطة إثرائية ضمن مجال ${d.name}`;
+      } else {
+        const needTexts = d.items.filter(it => it.val === "غالباً").map(it => it.text);
+        goalText = needTexts.length
+          ? `مساندة الطالب على: ${needTexts[0]}${needTexts.length > 1 ? " (واحتياجات أخرى ضمن مجال " + d.name + ")" : ""}`
+          : `تقديم مساندة نفسية/اجتماعية ضمن مجال ${d.name}`;
+      }
+      iepState.subjectGoals.push({ goal: goalText, start: "", end: "", notes: "" });
+    });
+    saveIepState();
+  }
+  renderSubjectGoalsTable();
+
+  captureEditableBoxes();
+  iepState.generatedOnce = true;
+  saveIepState();
+}
+
+function escapeHtml(str){
+  const div = document.createElement("div");
+  div.textContent = str || "";
+  return div.innerHTML;
+}
+
+function renderSubjectGoalsTable(){
+  const body = document.getElementById("subjectGoalsBody");
+  body.innerHTML = "";
+  iepState.subjectGoals.forEach((row, idx) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="goal-editable" contenteditable="true" data-idx="${idx}" data-field="goal" data-placeholder="اكتب الهدف الخاص...">${escapeHtml(row.goal)}</div></td>
+      <td><input type="date" data-idx="${idx}" data-field="start" value="${row.start || ""}"></td>
+      <td><input type="date" data-idx="${idx}" data-field="end" value="${row.end || ""}"></td>
+      <td>
+        <div class="goal-editable" contenteditable="true" data-idx="${idx}" data-field="notes" data-placeholder="ملاحظات...">${escapeHtml(row.notes)}</div>
+        <button type="button" class="goal-row-remove" data-remove="${idx}">🗑 حذف</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+document.getElementById("subjectGoalsBody").addEventListener("input", e => {
+  const idx = e.target.getAttribute("data-idx");
+  const field = e.target.getAttribute("data-field");
+  if(idx === null || !field) return;
+
+  if(e.target.classList.contains("goal-editable")){
+    iepState.subjectGoals[idx][field] = e.target.innerText;
+  } else {
+    iepState.subjectGoals[idx][field] = e.target.value;
+  }
+  saveIepState();
+});
+document.getElementById("subjectGoalsBody").addEventListener("click", e => {
+  const removeIdx = e.target.getAttribute("data-remove");
+  if(removeIdx !== null){
+    iepState.subjectGoals.splice(Number(removeIdx), 1);
+    saveIepState();
+    renderSubjectGoalsTable();
+  }
+});
+document.getElementById("addGoalRowBtn").addEventListener("click", () => {
+  iepState.subjectGoals.push({ goal: "", start: "", end: "", notes: "" });
+  saveIepState();
+  renderSubjectGoalsTable();
+});
+document.getElementById("subjectName").addEventListener("input", e => {
+  iepState.subjectName = e.target.value;
+  saveIepState();
+});
+
+function fillIepFormFromState(){
+  document.getElementById("iepStudentName").value = state.name || "";
+  document.getElementById("iepGrade").value = state.grade || "";
+  document.getElementById("iepSchool").value = iepState.school || "";
+  document.getElementById("iepTeacher").value = iepState.teacher || "";
+  document.getElementById("iepYear").value = iepState.year || "";
+  document.getElementById("iepSemester").value = iepState.semester || "";
+  document.getElementById("iepParentNotes").innerText = iepState.parentNotes || "";
+  document.getElementById("iepSigDate").value = iepState.sigDate || "";
+  document.getElementById("iepSigTeacher").value = iepState.sigTeacher || "";
+  document.getElementById("iepSigSupport").value = iepState.sigSupport || "";
+  document.getElementById("iepFollowUp").innerText = iepState.followUp || "";
+  document.getElementById("iepFinalNotes").innerText = iepState.finalNotes || "";
+  document.getElementById("subjectName").value = iepState.subjectName || "";
+  renderSubjectGoalsTable();
+}
+
+function openIepView(){
+  document.getElementById("mainView").classList.add("hide");
+  document.getElementById("iepView").classList.add("show");
+  fillIepFormFromState();
+  if(iepState.generatedOnce){
+    restoreEditableBoxes();
+  } else {
+    generateIepFromAssessment();
+  }
+  window.scrollTo(0,0);
+}
+function closeIepView(){
+  document.getElementById("mainView").classList.remove("hide");
+  document.getElementById("iepView").classList.remove("show");
+  window.scrollTo(0,0);
+}
+
+document.getElementById("goIepBtn").addEventListener("click", openIepView);
+document.addEventListener("input", (e) => {
+  if(e.target && e.target.id && EDITABLE_BOX_IDS.includes(e.target.id)){
+    iepState.boxes = iepState.boxes || {};
+    iepState.boxes[e.target.id] = e.target.innerHTML;
+    saveIepState();
+  }
+});
+document.getElementById("backToRasdBtn").addEventListener("click", closeIepView);
+document.getElementById("regenBtn").addEventListener("click", () => {
+  if(confirm("سيؤدي هذا إلى إعادة توليد كل النصوص المقترحة في الخطة من نتائج الرصد، وسيتم استبدال أي تعديلات يدوية أجريتها على تلك النصوص. هل تريد المتابعة؟")){
+    generateIepFromAssessment();
+  }
+});
+
+[
+  ["iepSchool","school"], ["iepTeacher","teacher"], ["iepYear","year"], ["iepSemester","semester"],
+  ["iepParentNotes","parentNotes"], ["iepSigDate","sigDate"], ["iepSigTeacher","sigTeacher"],
+  ["iepSigSupport","sigSupport"], ["iepFollowUp","followUp"], ["iepFinalNotes","finalNotes"]
+].forEach(([id, key]) => {
+  const el = document.getElementById(id);
+  el.addEventListener("input", e => {
+    iepState[key] = el.isContentEditable ? el.innerText : e.target.value;
+    saveIepState();
+  });
+});
+
+document.getElementById("saveIepBtn").addEventListener("click", () => {
+  saveIepState();
+  alert("تم حفظ الخطة التربوية الفردية بنجاح.");
+});
+
+loadIepState();
+</script>
+</body>
+</html>
