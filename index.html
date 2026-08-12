@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساندة | Supportify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Almarai:wght@400;700;800&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E1B3A;
+    --primary:#4A3E9E;
+    --primary-dark:#2C2560;
+    --gold:#E3A94E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Almarai',Tahoma,Arial,sans-serif;background:var(--primary-dark);}
+  .app{max-width:520px;margin:0 auto;}
+  .splash{
+    min-height:100vh;
+    background:radial-gradient(120% 90% at 15% 0%, #6355C4 0%, var(--primary) 42%, var(--primary-dark) 100%);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:48px 28px;color:#fff;text-align:center;
+  }
+  .glow{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;}
+  .glow-1{width:300px;height:300px;background:var(--gold);opacity:.30;top:-100px;right:-90px;}
+  .glow-2{width:240px;height:240px;background:#8B7DEE;opacity:.35;bottom:-70px;left:-70px;}
+
+  .mark{
+    width:104px;height:104px;border-radius:30px;background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 16px 34px rgba(15,12,40,0.35);
+    position:relative;z-index:1;
+  }
+  .mark svg{width:56px;height:56px;color:var(--primary);}
+
+  .app-name{font-family:'Cairo',sans-serif;font-weight:800;font-size:32px;margin:24px 0 2px;position:relative;z-index:1;}
+  .app-en{font-family:'Manrope',sans-serif;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+    color:var(--gold);font-size:12.5px;margin-bottom:20px;position:relative;z-index:1;}
+  .tagline{font-size:15px;line-height:1.95;color:rgba(255,255,255,0.82);max-width:300px;margin:0 auto 36px;position:relative;z-index:1;}
+
+  .actions{width:100%;max-width:300px;position:relative;z-index:1;}
+  .btn-start{
+    display:block;width:100%;text-decoration:none;
+    background:var(--gold);color:#2C2560;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:17px;
+    padding:16px;border-radius:14px;box-shadow:0 12px 26px rgba(0,0,0,0.28);
+    border:none;cursor:pointer;margin-bottom:12px;
+  }
+  .btn-start:active{transform:scale(0.98);}
+  .btn-exit{
+    display:block;width:100%;background:rgba(255,255,255,0.08);color:#fff;
+    border:1.5px solid rgba(255,255,255,0.28);font-family:'Cairo',sans-serif;font-weight:700;
+    font-size:14.5px;padding:13px;border-radius:14px;cursor:pointer;
+  }
+  .credit{margin-top:40px;font-size:12.5px;color:rgba(255,255,255,0.55);position:relative;z-index:1;}
+  .credit b{color:rgba(255,255,255,0.8);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="splash">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="mark">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor">
+        <path d="M8 30 C4 26 4 18 10 14" stroke-width="3" stroke-linecap="round"/>
+        <path d="M40 30 C44 26 44 18 38 14" stroke-width="3" stroke-linecap="round"/>
+        <path d="M24 34 C24 34 12 26 12 17.5 C12 12.8 15.8 9.5 20 9.5 C21.8 9.5 23.4 10.5 24 12 C24.6 10.5 26.2 9.5 28 9.5 C32.2 9.5 36 12.8 36 17.5 C36 26 24 34 24 34 Z" fill="currentColor" stroke="none"/>
+      </svg>
+    </div>
+
+    <h1 class="app-name">مساندة</h1>
+    <div class="app-en">Supportify</div>
+    <p class="tagline">رفيق المعلّم اليومي لفهم احتياجات الطلبة والوصول إلى أدوات الدعم المناسبة لكل حالة</p>
+
+    <div class="actions">
+      <a class="btn-start" href="tool_categories.html">ابدأ</a>
+      <button class="btn-exit" onclick="if(confirm('هل تريد الخروج؟')) window.close();">خروج</button>
+    </div>
+
+    <p class="credit">إعداد الخبيرة التربوية: <b>انتصار مصطفى</b></p>
+  </div>
+</div>
+</body>
+</html>
